@@ -4,14 +4,17 @@
  */
 package wsb.finalexam.demo.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import model.entity.Person;
 import model.jpacontroller.PersonJpaController;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,5 +53,26 @@ public class myController {
         return dummy;
     }
     
-    
+    @PostMapping()
+    public String createData(HttpEntity<String> paket) {
+        String message = "";
+
+        try {
+            String json_receive = paket.getBody();
+
+            ObjectMapper map = new ObjectMapper();
+
+            Person data = new Person();
+
+            data = map.readValue(json_receive, Person.class);
+
+            ctrl.create(data);
+            message = data.getNama()+ " Data Saved";
+
+        } catch (Exception e) {
+            message = "Failed";
+        }
+
+        return message;
+    }
 }

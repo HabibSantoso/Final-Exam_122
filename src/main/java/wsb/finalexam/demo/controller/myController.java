@@ -12,9 +12,11 @@ import model.entity.Person;
 import model.jpacontroller.PersonJpaController;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -73,6 +75,41 @@ public class myController {
             message = "Failed";
         }
 
+        return message;
+    }
+    
+    @PutMapping()
+    public String editData(HttpEntity<String> kiriman) {
+        String message = "no action";
+        try {
+            String json_receive = kiriman.getBody();
+            ObjectMapper mapper = new ObjectMapper();
+
+            Person newdatas = new Person();
+
+            newdatas = mapper.readValue(json_receive, Person.class);
+            ctrl.edit(newdatas);
+            message = newdatas.getNama()+ " has been Updated";
+        } catch (Exception e) {
+        }
+        return message;
+    }
+    
+     @DeleteMapping()
+    public String deleteData(HttpEntity<String> kiriman) {
+        String message = "no action";
+        try {
+            String json_receive = kiriman.getBody();
+            ObjectMapper mapper = new ObjectMapper();
+
+            Person newdatas = new Person();
+
+            newdatas = mapper.readValue(json_receive, Person.class);
+            ctrl.destroy(newdatas.getId());
+
+            message = "Data has been Deleted";
+        } catch (Exception e) {
+        }
         return message;
     }
 }
